@@ -23,8 +23,19 @@ classdef kinematicModel < handle
         % - J: end-effector jacobian matrix
 
             % TO DO
-
-            
+            self.J = zeros(6, self.gm.jointNumber);
+            iTn = eye(4);
+            ki = [0, 0, 1];
+            for j = 1:self.gm.jointNumber
+                i = self.gm.jointNumber - j + 1;
+                iTn = self.gm.iTj(:,:,i) * iTn;
+                irn = iTn(1:3, 4);
+                if self.gm.jointType(i) == 0
+                    self.J(:, i) = [ki, cross([0, 0, 1], irn)];
+                else
+                    self.J(:, i) = [zeros(1, 3), ki];
+                end  
+            end
         end
     end
 end
