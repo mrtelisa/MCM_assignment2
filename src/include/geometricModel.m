@@ -40,7 +40,20 @@ classdef geometricModel < handle
             % The size of iTj is equal to (4,4,numberOfLinks)
             
             %TO DO
+
+            for i = 1:length(q)
+                Tz = eye(4,4); % FIXME: this may be unnecessary
+                if self.jointType(i) == 0
+                    s = sin(q(i));
+                    c = cos(q(i));
+                    Tz = [c -s 0 0; s c 0 0; 0 0 1 0; 0 0 0 1];
+                else
+                    Tz(3, 4) = q(i);
+                end
+                self.iTj(:,:,i) =  self.iTj_0(:,:,i) * Tz;
+            end
         end
+
         function [bTk] = getTransformWrtBase(self,k)
             %% GetTransformatioWrtBase function
             % Inputs :
@@ -50,8 +63,12 @@ classdef geometricModel < handle
             % the configuration identified by iTj.
 
             %TO DO
-        end
 
+            bTk = eye(4,4);
+            for i = 1:k
+                bTk = bTk * self.iTj(:,:,i);
+            end
+        end
     end
 end
 
