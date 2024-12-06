@@ -26,8 +26,7 @@ classdef kinematicModel < handle
             self.J = zeros(6, self.gm.jointNumber);
             iTn = eye(4);
             ki = [0, 0, 1];
-            for j = 1:self.gm.jointNumber
-                i = self.gm.jointNumber - j + 1;
+            for i = self.gm.jointNumber:-1:1
                 iTn = self.gm.iTj(:,:,i) * iTn;
                 irn = iTn(1:3, 4);
                 if self.gm.jointType(i) == 0
