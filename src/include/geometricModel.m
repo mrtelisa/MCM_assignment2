@@ -41,12 +41,17 @@ classdef geometricModel < handle
             
             %TO DO
 
+            if length(q) ~= self.jointNumber
+                error("Invalid number of joint variables, expected: %d, given: %d", self.jointNumber, length(q));
+            end
+            self.q = q;
+
             for i = 1:length(q)
-                Tz = eye(4,4); % FIXME: this may be unnecessary
+                Tz = eye(4,4);
                 if self.jointType(i) == 0
                     s = sin(q(i));
                     c = cos(q(i));
-                    Tz = [c -s 0 0; s c 0 0; 0 0 1 0; 0 0 0 1];
+                    Tz(1:2, 1:2) = [c -s; s c];
                 else
                     Tz(3, 4) = q(i);
                 end
@@ -63,6 +68,9 @@ classdef geometricModel < handle
             % the configuration identified by iTj.
 
             %TO DO
+            if (k < 1)
+                error("invalid frame number");
+            end
 
             bTk = eye(4,4);
             for i = 1:k
